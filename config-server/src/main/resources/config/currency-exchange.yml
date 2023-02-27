@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: currency-exchange
   server:
     port: 8000
   jpa:
