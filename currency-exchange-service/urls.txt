@@ -8,7 +8,7 @@ http://localhost:8100/currency-conversion-feign/from/USD/to/INR/quantity/10
 Eureka
 http://localhost:8761/
 
-Api Gateway
+Api Gateway (Not customized - Default PORTs)
 http://localhost:8765/{eurekaApplicationName}/...
 http://localhost:8765/CURRENCY-EXCHANGE/currency-exchange/from/USD/to/INR
 
@@ -21,3 +21,6 @@ If we make spring.cloud.gateway.discovery.locator.lowerCaseServiceId:true config
 http://localhost:8765/currency-exchange/currency-exchange/from/USD/to/INR
 http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/INR/quantity/10
 http://localhost:8765/currency-conversion/currency-conversion-feign/from/USD/to/INR/quantity/10
+
+CUSTOMIZED API GATEWAY PORT (look at ApiGatewayConfiguration.java Class)
+http://localhost:8765/currency-conversion-feign/from/USD/to/INR/quantity/10
