@@ -7,7 +7,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
-        <module name="config-server" />
         <module name="currency-exchange-service" />
         <module name="currency-conversion-service" />
         <module name="naming-server" />
