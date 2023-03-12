@@ -29,7 +29,7 @@ public class CurrencyConversionController {
                 currencyConversion.getId(),
                 from,
                 to,
-                currencyConversion.getQuantity(),
+                quantity,
                 currencyConversion.getConversionMultiple(),
                 quantity.multiply(currencyConversion.getConversionMultiple()),
                 currencyConversion.getEnvironment());
@@ -54,7 +54,7 @@ public class CurrencyConversionController {
                 responseEntity.getBody().getId(),
                 from,
                 to,
-                responseEntity.getBody().getQuantity(),
+                quantity,
                 responseEntity.getBody().getConversionMultiple(),
                 quantity.multiply(responseEntity.getBody().getConversionMultiple()),
                 responseEntity.getBody().getEnvironment());
