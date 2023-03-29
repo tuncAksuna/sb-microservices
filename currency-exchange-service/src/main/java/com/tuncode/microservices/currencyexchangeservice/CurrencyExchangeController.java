@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 @RestController
 public class CurrencyExchangeController {
@@ -27,7 +24,7 @@ public class CurrencyExchangeController {
     }
 
     @GetMapping("/currency-exchange/from/{from}/to/{to}")
-    @CircuitBreaker(name = CURRENCY_EXCHANGE_INSTANCE, fallbackMethod = "exchangeServiceFallBack")
+//    @CircuitBreaker(name = CURRENCY_EXCHANGE_INSTANCE, fallbackMethod = "exchangeServiceFallBack")
     public CurrencyExchange retrieveExchangeValue(@PathVariable String from, @PathVariable String to) {
 
         CurrencyExchange currencyExchange = repository.findByFromAndTo(from, to);
@@ -43,7 +40,7 @@ public class CurrencyExchangeController {
         return currencyExchange;
     }
 
-    public ResponseEntity<String> exchangeServiceFallBack(Exception exc) {
-        return new ResponseEntity<String> ("Currency Exchange service is down ", HttpStatus.OK);
-    }
+//    public ResponseEntity<String> exchangeServiceFallBack(Exception exc) {
+//        return new ResponseEntity<String> ("Currency Exchange service is down ", HttpStatus.OK);
+//    }
 }
