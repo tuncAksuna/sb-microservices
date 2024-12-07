@@ -4,8 +4,8 @@ server:
 spring:
   application:
     name: currency-conversion
-#  profiles:
-#    active: "prod"
+  profiles:
+    active: "prod"
   config:
     import: "configserver:http://localhost:8888/" #for communication with spring cloud config server
 

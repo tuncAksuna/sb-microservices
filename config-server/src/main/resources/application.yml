@@ -1,0 +1,17 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: "config-server"
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/tuncAksuna/advanced-microservice-config.git
+          default-label: master # default branch name
+          timeout: 5 # not be able to connect to GitHub for whatever reason repository the config server should immedialetly throw an exception
+          clone-on-start: true # clone the GitHub repository into local system during the startup itself
+          force-pull: true
