@@ -3,10 +3,10 @@ server:
 spring:
   application:
     name: currency-exchange
-#  profiles:
-#    active: "prod"
-#  config:
-#    import: "configserver:http://localhost:8888/" #for communication with spring cloud config server
+  profiles:
+    active: "prod"
+  config:
+    import: "configserver:http://localhost:8888/" #for communication with spring cloud config server
   jpa:
     show-sql: true
     hibernate:
