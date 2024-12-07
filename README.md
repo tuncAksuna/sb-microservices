@@ -1,0 +1,4 @@
+- centralized configuration management using Spring cloud configuration server,
+- eureka naming server (service registry)
+- feign API  for inter-service communication,
+- API gateway for routing requests to the service and load balancing ...
