@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: currency-conversion
+#  profiles:
+#    active: "prod"
+  config:
+    import: "configserver:http://localhost:8888/" #for communication with spring cloud config server
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
