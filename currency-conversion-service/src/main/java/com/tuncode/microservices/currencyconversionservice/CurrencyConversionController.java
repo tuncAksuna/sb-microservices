@@ -13,8 +13,11 @@ import java.util.HashMap;
 @RestController
 public class CurrencyConversionController {
 
-    @Autowired
-    private CurrencyExchangeProxy exchangeProxy;
+    private final CurrencyExchangeProxy exchangeProxy;
+
+    public CurrencyConversionController(CurrencyExchangeProxy exchangeProxy) {
+        this.exchangeProxy = exchangeProxy;
+    }
 
     // TODO : inter-service communication by FEIGN
     @GetMapping("/currency-conversion-feign/from/{from}/to/{to}/quantity/{quantity}")
