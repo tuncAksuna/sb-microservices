@@ -8,6 +8,7 @@ spring:
     active: "prod"
   config:
     import: "configserver:http://localhost:8888/" #for communication with spring cloud config server
+
   rabbitmq:
     host: "localhost"
     port: 5672

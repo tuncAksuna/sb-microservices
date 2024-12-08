@@ -7,15 +7,19 @@ spring:
     active: "service-prod"
   config:
     import: "configserver:http://localhost:8888/" #for communication with spring cloud config server
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/advanced-microservice
+    username: postgres
+    password: caksuna123.
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: update
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: 123456
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show_sql: true
 
   rabbitmq:
     host: "localhost"
@@ -26,7 +30,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8763/eureka
 
 management:
   health:
