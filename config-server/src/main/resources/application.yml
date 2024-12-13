@@ -29,9 +29,9 @@ management:
       exposure:
         include: bus-refresh, monitor, health
   health:
-    readiness-state:
+    readiness-state: # is container ready to receive network trafic?
       enabled: true
-    liveness-state:
+    liveness-state: # is container ready to receive network trafic?
       enabled: true
   endpoint:
     health:

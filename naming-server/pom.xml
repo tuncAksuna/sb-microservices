@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.tuncode.microservice</groupId>
     <artifactId>naming-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>naming-server</name>
     <description>Netlifx Eureka Server - Naming Server</description>
     <properties>
@@ -63,6 +63,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>caksuna/advanced-microservice-${project.artifactId}:${project.version}</name>
+                    </image>
+                </configuration>
             </plugin>
         </plugins>
     </build>
