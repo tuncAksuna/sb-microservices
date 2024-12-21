@@ -1,19 +1,14 @@
 services:
-  network-deploy-service:
+  base-config-service:
     networks:
-      - tuncode
-
-  microservice-base-config:
-    extends:
-      service: network-deploy-service
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-
-  microservice-configserver-config:
-    extends:
-      service: microservice-base-config
+      - advanced-microservice
     environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+
+  config-server-service:
+    extends:
+      service: base-config-service
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888/
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/

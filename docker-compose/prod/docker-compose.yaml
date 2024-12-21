@@ -1,0 +1,137 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: base-config-service
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  postgresql:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: caksuna123.
+      POSTGRES_DB: advanced-microservice
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  config-server:
+    image: caksuna/config-server:0.0.1
+    ports:
+      - "8888:8888"
+    depends_on:
+      - rabbitmq
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8888/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: base-config-service
+
+  naming-server:
+    image: caksuna/naming-server:0.0.1
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_APPLICATION_NAME: "naming-server"
+    depends_on:
+      - config-server
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: config-server-service
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    ports:
+      - "9411:9411"
+    healthcheck:
+      test: "curl --fail --silent http://localhost:9411/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      - naming-server
+    networks:
+      - advanced-microservice
+
+  api-gateway:
+    image: caksuna/api-gateway:0.0.1
+    ports:
+      - "8765:8765"
+    environment:
+      SPRING_APPLICATION_NAME: "api-gateway"
+    depends_on:
+      - naming-server
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8765/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: config-server-service
+
+  currency-exchange:
+    image: caksuna/currency-exchange-service:0.0.1
+    ports:
+      - "8000:8000"
+    environment:
+      SPRING_APPLICATION_NAME: "currency-exchange"
+      SPRING_PROFILES_ACTIVE: service-prod
+    depends_on:
+      - naming-server
+      - postgresql
+    extends:
+      file: common-config.yml
+      service: base-config-service
+
+  currency-conversion:
+    image: caksuna/currency-conversion-service:0.0.1
+    ports:
+      - "8100:8100"
+    depends_on:
+      - naming-server
+      - currency-exchange
+    environment:
+      SPRING_APPLICATION_NAME: "currency-conversion"
+      SPRING_PROFILES_ACTIVE: service-prod
+    extends:
+      file: common-config.yml
+      service: base-config-service
+
+networks:
+  advanced-microservice:
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
