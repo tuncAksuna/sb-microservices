@@ -1,0 +1,14 @@
+services:
+  base-config-service:
+    networks:
+      - advanced-microservice
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING_PROFILES_ACTIVE: default
+
+  config-server-service:
+    extends:
+      service: base-config-service
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888/

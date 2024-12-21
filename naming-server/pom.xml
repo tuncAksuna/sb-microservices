@@ -65,7 +65,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>caksuna/advanced-microservice-${project.artifactId}:${project.version}</name>
+                        <name>caksuna/${project.artifactId}:${project.version}</name>
                     </image>
                 </configuration>
             </plugin>

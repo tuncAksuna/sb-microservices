@@ -3,8 +3,6 @@ server:
 spring:
   application:
     name: api-gateway
-  profiles:
-    active: "prod"
   config:
     import: "configserver:http://localhost:8888/" #for communication with spring cloud config server
   cloud:
