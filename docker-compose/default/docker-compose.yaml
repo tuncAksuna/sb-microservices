@@ -1,86 +1,133 @@
-version: '3.7'
-
 services:
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: base-config-service
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  postgresql:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: caksuna123.
+      POSTGRES_DB: advanced-microservice
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   config-server:
     image: caksuna/config-server:0.0.1
     ports:
       - "8888:8888"
+    depends_on:
+      - rabbitmq
     healthcheck:
-      test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent http://localhost:8888/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
-    networks:
-      - advanced-microservice
+    extends:
+      file: common-config.yml
+      service: base-config-service
 
   naming-server:
-    image: caksuna/advanced-microservice-naming-server:0.0.1
+    image: caksuna/naming-server:0.0.1
     ports:
       - "8761:8761"
+    environment:
+      SPRING_APPLICATION_NAME: "naming-server"
     depends_on:
       - config-server
-    networks:
-      - advanced-microservice
-    environment:
-      SPRING_CONFIG_IMPORT: "http://config-server:8888/"
-      SPRING_APPLICATION_NAME: "naming-server"
-      SPRING_PROFILES_ACTIVE: default
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: config-server-service
 
   zipkin-server:
     image: openzipkin/zipkin:2.23
     ports:
       - "9411:9411"
+    healthcheck:
+      test: "curl --fail --silent http://localhost:9411/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      - naming-server
     networks:
       - advanced-microservice
 
   api-gateway:
-    image: caksuna/advanced-microservice-api-gateway:0.0.1
+    image: caksuna/api-gateway:0.0.1
     ports:
       - "8765:8765"
+    environment:
+      SPRING_APPLICATION_NAME: "api-gateway"
     depends_on:
       - naming-server
-      - config-server
-    networks:
-      - advanced-microservice
-    environment:
-      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
-      SPRING_APPLICATION_NAME: "api-gateway"
-      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
-      SPRING_PROFILES_ACTIVE: default
-      SPRING_CONFIG_IMPORT: "http://config-server:8888/"
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8765/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: config-server-service
 
   currency-exchange:
-    image: caksuna/advanced-microservice-currency-exchange-service:0.0.1
+    image: caksuna/currency-exchange-service:0.0.1
     ports:
       - "8000:8000"
+    environment:
+      SPRING_APPLICATION_NAME: "currency-exchange"
     depends_on:
       - naming-server
-      - config-server
-    networks:
-      - advanced-microservice
-    environment:
-      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
-      SPRING_APPLICATION_NAME: "currency-exchange"
-      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
-      SPRING_PROFILES_ACTIVE: default
-      SPRING_CONFIG_IMPORT: "http://config-server:8888/"
+      - postgresql
+    extends:
+      file: common-config.yml
+      service: config-server-service
 
   currency-conversion:
-    image: caksuna/advanced-microservice-currency-conversion-service:0.0.1
+    image: caksuna/currency-conversion-service:0.0.1
     ports:
       - "8100:8100"
     depends_on:
       - naming-server
-      - config-server
-    networks:
-      - advanced-microservice
+      - currency-exchange
     environment:
-      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
       SPRING_APPLICATION_NAME: "currency-conversion"
-      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
-      SPRING_PROFILES_ACTIVE: default
-      SPRING_CONFIG_IMPORT: "http://config-server:8888/"
+    extends:
+      file: common-config.yml
+      service: config-server-service
 
 networks:
   advanced-microservice:
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
