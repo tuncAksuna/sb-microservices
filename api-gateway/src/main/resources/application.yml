@@ -26,8 +26,21 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
+
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  endpoint:
+    shutdown:
+      enabled: true # to safely stop the application
+  info:
+    env:
+      enabled: true # to show information about the service
+
+info:
+  app:
+    name: "api-gateway"
+    description: "Api Gateway for logging, security, load balancing"
+    version: "0.0.1"

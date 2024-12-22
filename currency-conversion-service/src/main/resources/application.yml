@@ -26,3 +26,15 @@ management:
     web:
       exposure:
         include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: "currency-conversion"
+    description: "Currency Conversion for conversion"
+    version: "0.0.1"

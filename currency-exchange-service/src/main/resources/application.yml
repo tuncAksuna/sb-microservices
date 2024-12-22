@@ -43,8 +43,19 @@ management:
       exposure:
         include: "*"
   endpoint:
+    shutdown:
+      enabled: true
     health:
       show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: "currency-exchange"
+    description: "Currency Exchange for exchanging"
+    version: "0.0.1"
 
 resilience4j:
   circuitbreaker:
