@@ -9,7 +9,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true # connect with my discovery server which is Eureka Server
+          enabled: false # connect with my discovery server which is Eureka Server
           lower-case-service-id: true # If we have customized Gateway configuration( example : ApiGatewayConfiguration.java class ), these are not necessarry
   rabbitmq:
     host: "localhost"
