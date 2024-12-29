@@ -9,7 +9,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
+          enabled: true # connect with my discovery server which is Eureka Server
           lower-case-service-id: true # If we have customized Gateway configuration( example : ApiGatewayConfiguration.java class ), these are not necessarry
   rabbitmq:
     host: "localhost"
@@ -26,15 +26,14 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
-
 management:
   endpoints:
     web:
       exposure:
         include: "*"
   endpoint:
-    shutdown:
-      enabled: true # to safely stop the application
+    gateway:
+      enabled: true
   info:
     env:
       enabled: true # to show information about the service
@@ -44,3 +43,10 @@ info:
     name: "api-gateway"
     description: "Api Gateway for logging, security, load balancing"
     version: "0.0.1"
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG
