@@ -1,5 +1,6 @@
 package com.tuncode.microservices.currencyexchangeservice;
 
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ public class CurrencyExchangeController {
         CurrencyExchange currencyExchange = repository.findByFromAndTo(from, to);
 
         if (currencyExchange == null) {
-            throw new RuntimeException("Unable to find data !");
+            throw new NotFoundException("Unable to find data !");
         }
 
         // we will know which instance of the currency exchange service is actually responding back !
